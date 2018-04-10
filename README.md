@@ -1,5 +1,6 @@
 # Game of Life
 Basic implementation of John Conway's Game of Life cellular automaton.
+Using p5.js library.
 
 # Rules
 1. Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.
