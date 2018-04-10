@@ -1,3 +1,5 @@
+// Credits to Daniel Shiffman for base source code
+
 function make2DArray(cols, rows) {
   let arr = new Array(cols);
   for(let i = 0; i < arr.length; i++) {
