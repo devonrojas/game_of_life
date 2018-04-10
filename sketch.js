@@ -11,10 +11,10 @@ function make2DArray(cols, rows) {
 let grid;
 let cols;
 let rows;
-let resolution = 50;
+let resolution = 10;
 
 function setup() {
-  createCanvas(800, 600);
+  createCanvas(1000, 600);
   cols = width / resolution;
   rows = height / resolution;
 
@@ -28,13 +28,14 @@ function setup() {
 }
 let i = 0;
 
+let run = true;
 
 function draw() {
   background(0);
-  s = "Generation: " + str(i);
-  text(s, 1170, 700);
-  textSize(32);
-  fill(255);
+  // s = "Generation: " + str(i);
+  // text(s, width-200, height-50);
+  // textSize(24);
+  // fill(255);
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
       let x = i * resolution;
@@ -46,26 +47,10 @@ function draw() {
       }
     }
   }
-
-  let next = make2DArray(cols, rows);
-
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
-      let state = grid[i][j];
-      // Count live neighbors
-      let neighbors = countNeighbors(grid, i, j);
-
-      if (state == 0 && neighbors == 3) {
-        next[i][j] = 1;
-      } else if (state == 1 && (neighbors < 2 || neighbors > 3)) {
-        next[i][j] = 0;
-      } else {
-        next[i][j] = state;
-      }
-    }
+  if (run) {
+    next = generate();
+    grid = next;
   }
-
-  grid = next;
   i++;
 }
 
@@ -87,9 +72,40 @@ let b = 0;
 function mouseClicked() {
   let x = floor(winMouseX / resolution);
   let y = floor(winMouseY / resolution);
-  console.log(x, y);
-  console.log(winMouseX, winMouseY);
-  grid[x][y] = 1;
+  if (grid[x][y] == 1) {
+    grid[x][y] = 0;
+  } else {
+    grid[x][y] = 1;
+  }
   fill(255);
   stroke(255);
+}
+
+function clearGrid() {
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      grid[i][j] = 0;
+    }
+  }
+  run = false;
+}
+
+function generate() {
+  let next = make2DArray(cols, rows);
+    for (let i = 0; i < cols; i++) {
+      for (let j = 0; j < rows; j++) {
+        let state = grid[i][j];
+        // Count live neighbors
+        let neighbors = countNeighbors(grid, i, j);
+
+        if (state == 0 && neighbors == 3) {
+          next[i][j] = 1;
+        } else if (state == 1 && (neighbors < 2 || neighbors > 3)) {
+          next[i][j] = 0;
+        } else {
+          next[i][j] = state;
+        }
+      }
+    }
+    return next;
 }
