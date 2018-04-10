@@ -11,31 +11,30 @@ function make2DArray(cols, rows) {
 let grid;
 let cols;
 let rows;
-let resolution = 10;
+let resolution = 20;
+let w = (Math.ceil(window.innerWidth/100) * 100) - (Math.ceil(window.innerWidth/400)*100);
+let h = Math.ceil(window.innerHeight/100) * 100;
 
 function setup() {
-  createCanvas(1000, 600);
+  createCanvas(w, h - 40);
   cols = width / resolution;
   rows = height / resolution;
-
-  grid = make2DArray(cols, rows);
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
-      grid[i][j] = floor(random(2));
-    }
-  }
-  // frameRate(8);
+  init();
+  // Customize frameRate input to observe execution of Game of Life at different speeds.
+  frameRate(8);
 }
+// Generation counter
 let i = 0;
 
+// draw() controller
 let run = true;
 
 function draw() {
   background(0);
-  // s = "Generation: " + str(i);
-  // text(s, width-200, height-50);
-  // textSize(24);
-  // fill(255);
+  s = "Generation: " + str(i);
+  text(s, width-200, height-50);
+  textSize(24);
+  fill(255);
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
       let x = i * resolution;
@@ -50,26 +49,31 @@ function draw() {
   if (run) {
     next = generate();
     grid = next;
+    i++;
   }
-  i++;
 }
 
-function countNeighbors(grid, x, y) {
-  let sum = 0;
-  for (let i = -1; i < 2; i++) {
-    for (let j = -1; j < 2; j++) {
-      let col = (x + i + cols) % cols;
-      let row = (y + j + rows) % rows;
-      sum += grid[col][row];
+function  init() {
+  i = 0;
+  grid = make2DArray(cols, rows);
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      grid[i][j] = floor(random(2));
     }
   }
-  sum -= grid[x][y];
-  return sum;
+  run = true;
 }
 
-let b = 0;
+function mouseDragged() {
+  userDraw();
+}
 
 function mouseClicked() {
+  userDraw();
+}
+
+// Allow for user to specify cell state
+function userDraw() {
   let x = floor(winMouseX / resolution);
   let y = floor(winMouseY / resolution);
   if (grid[x][y] == 1) {
@@ -81,6 +85,41 @@ function mouseClicked() {
   stroke(255);
 }
 
+// Allow for user control
+function keyPressed() {
+  if (keyCode === RETURN) {
+    run = !run;
+  }
+  if (keyCode === BACKSPACE) {
+    clearGrid();
+  }
+}
+
+let savedPatterns = {};
+
+// Save named pattern into memory
+function saveGrid(name) {
+  saved = make2DArray(cols, rows);
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      saved[i][j] = grid[i][j]
+    }
+  }
+  savedPatterns[name] = saved;
+}
+
+// Load named pattern from memory & reset canvas
+function loadGrid(name) {
+  loaded = savedPatterns[name];
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      grid[i][j] = loaded[i][j]
+    }
+  }
+  i = 0;
+}
+
+// Set all cells to 0 & reset draw() function
 function clearGrid() {
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
@@ -88,6 +127,7 @@ function clearGrid() {
     }
   }
   run = false;
+  i = 0;
 }
 
 function generate() {
@@ -108,4 +148,17 @@ function generate() {
       }
     }
     return next;
+}
+
+function countNeighbors(grid, x, y) {
+  let sum = 0;
+  for (let i = -1; i < 2; i++) {
+    for (let j = -1; j < 2; j++) {
+      let col = (x + i + cols) % cols;
+      let row = (y + j + rows) % rows;
+      sum += grid[col][row];
+    }
+  }
+  sum -= grid[x][y];
+  return sum;
 }
