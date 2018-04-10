@@ -11,10 +11,10 @@ function make2DArray(cols, rows) {
 let grid;
 let cols;
 let rows;
-let resolution = 20;
+let resolution = 50;
 
 function setup() {
-  createCanvas(1440, 720);
+  createCanvas(800, 600);
   cols = width / resolution;
   rows = height / resolution;
 
@@ -24,12 +24,17 @@ function setup() {
       grid[i][j] = floor(random(2));
     }
   }
-  frameRate(8);
+  // frameRate(8);
 }
+let i = 0;
+
 
 function draw() {
   background(0);
-
+  s = "Generation: " + str(i);
+  text(s, 1170, 700);
+  textSize(32);
+  fill(255);
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
       let x = i * resolution;
@@ -48,7 +53,6 @@ function draw() {
     for (let j = 0; j < rows; j++) {
       let state = grid[i][j];
       // Count live neighbors
-      let sum = 0;
       let neighbors = countNeighbors(grid, i, j);
 
       if (state == 0 && neighbors == 3) {
@@ -62,6 +66,7 @@ function draw() {
   }
 
   grid = next;
+  i++;
 }
 
 function countNeighbors(grid, x, y) {
@@ -75,4 +80,16 @@ function countNeighbors(grid, x, y) {
   }
   sum -= grid[x][y];
   return sum;
+}
+
+let b = 0;
+
+function mouseClicked() {
+  let x = floor(winMouseX / resolution);
+  let y = floor(winMouseY / resolution);
+  console.log(x, y);
+  console.log(winMouseX, winMouseY);
+  grid[x][y] = 1;
+  fill(255);
+  stroke(255);
 }
