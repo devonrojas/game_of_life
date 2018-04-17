@@ -58,9 +58,12 @@ function  init() {
   grid = make2DArray(cols, rows);
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
-      grid[i][j] = floor(random(2));
+      grid[i][j] = 0;
     }
   }
+  let x = rows/2;
+  grid[x][2] = 1;
+
   run = true;
 }
 
