@@ -22,7 +22,7 @@ function setup() {
 
 function init(cells, rows) {
   grid = new Array(cells);
-  for (let i = 0; i < grid.length; i++) {
+  for (let i = 0; i < cells; i++) {
     grid[i] = new Array(rows);
   }
 }
