@@ -1,17 +1,7 @@
 let grid;
-let resolution = 5;
 let cells;
 let rows;
-
-function init(cells, rows) {
-  grid = new Array(cells);
-
-  for (let i = 0; i < grid.length; i++) {
-    grid[i] = new Array(rows);
-  }
-
-
-}
+let resolution = 5;
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
@@ -23,15 +13,21 @@ function setup() {
       grid[i][j] = 0;
     }
   }
-  let middle = cells / 2;
-  grid[middle][0] = 1;
-  // for (let i = 0; i < cells; i++) {
-  //   grid[i][0] = floor(random(2));
-  // }
+  // let middle = cells / 2;
+  // grid[middle][0] = 1;
+  for (let i = 0; i < cells; i++) {
+    grid[i][0] = floor(random(2));
+  }
+}
+
+function init(cells, rows) {
+  grid = new Array(cells);
+  for (let i = 0; i < grid.length; i++) {
+    grid[i] = new Array(rows);
+  }
 }
 
 let gen = 0;
-
 
 function draw() {
   background(0);
@@ -47,10 +43,10 @@ function draw() {
     }
   }
   generate();
-  gen++;
   if (gen == rows) {
     noLoop();
   }
+  gen++;
 }
 
 function generate() {
@@ -65,13 +61,33 @@ function generate() {
   }
 }
 
-// Rule 30
 function calculateState(currentRow, i) {
   let state = 0;
+
+  // // Implements Rule 30 a.k.a [00011110]
+  // if (currentRow[i - 1] == 1 && currentRow[i] == 1 && currentRow[i + 1] == 1) {
+  //   state = 0;
+  // } else if (currentRow[i - 1] == 1 && currentRow[i] == 1 && currentRow[i + 1] == 0) {
+  //   state = 0;
+  // } else if (currentRow[i - 1] == 1 && currentRow[i] == 0 && currentRow[i + 1] == 1) {
+  //   state = 0;
+  // } else if (currentRow[i - 1] == 1 && currentRow[i] == 0 && currentRow[i + 1] == 0) {
+  //   state = 1;
+  // } else if (currentRow[i - 1] == 0 && currentRow[i] == 1 && currentRow[i + 1] == 1) {
+  //   state = 1;
+  // } else if (currentRow[i - 1] == 0 && currentRow[i] == 1 && currentRow[i + 1] == 0) {
+  //   state = 1;
+  // } else if (currentRow[i - 1] == 0 && currentRow[i] == 0 && currentRow[i + 1] == 1) {
+  //   state = 1;
+  // } else if (currentRow[i - 1] == 0 && currentRow[i] == 0 && currentRow[i + 1] == 0) {
+  //   state = 0;
+  // }
+
+  // Implements Rule 90 a.k.a [01011010]
   if (currentRow[i - 1] == 1 && currentRow[i] == 1 && currentRow[i + 1] == 1) {
     state = 0;
   } else if (currentRow[i - 1] == 1 && currentRow[i] == 1 && currentRow[i + 1] == 0) {
-    state = 0;
+    state = 1;
   } else if (currentRow[i - 1] == 1 && currentRow[i] == 0 && currentRow[i + 1] == 1) {
     state = 0;
   } else if (currentRow[i - 1] == 1 && currentRow[i] == 0 && currentRow[i + 1] == 0) {
@@ -79,11 +95,26 @@ function calculateState(currentRow, i) {
   } else if (currentRow[i - 1] == 0 && currentRow[i] == 1 && currentRow[i + 1] == 1) {
     state = 1;
   } else if (currentRow[i - 1] == 0 && currentRow[i] == 1 && currentRow[i + 1] == 0) {
-    state = 1;
+    state = 0;
   } else if (currentRow[i - 1] == 0 && currentRow[i] == 0 && currentRow[i + 1] == 1) {
     state = 1;
   } else if (currentRow[i - 1] == 0 && currentRow[i] == 0 && currentRow[i + 1] == 0) {
     state = 0;
   }
+
   return state;
+}
+
+function keyPressed() {
+  if (keyCode == ENTER) {
+    gen = 0;
+    for (let i = 0; i < cells; i++) {
+      for (let j = 0; j < rows; j++) {
+        grid[i][j] = 0;
+      }
+    }
+    let middle = cells / 2;
+    grid[middle][0] = 1;
+  }
+  loop();
 }
